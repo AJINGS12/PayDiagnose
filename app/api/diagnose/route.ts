@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
+const MAX_INPUT_LENGTH = 6000;
+
 function getClient() {
   return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 }
@@ -17,6 +19,11 @@ A developer will paste a webhook payload, error log, or failed request. Your job
    - env_var: Environment variable misconfiguration (missing var, wrong environment - test vs live keys, not loaded at runtime)
    - malformed_payload: Payload structure doesn't match what the code expects (schema mismatch, null field, wrong content-type)
    - unknown: Doesn't clearly match the above - explain your best guess
+   
+   IMPORTANT: If the evidence is ambiguous, incomplete, or conflicting, do NOT force-fit it into a specific category just to seem confident. Instead:
+   - Select "unknown" with "low" confidence
+   - In your explanation, clearly state what specific information is missing (e.g. "the request headers weren't included" or "no stack trace was provided")
+   - Keep the fix_snippet conservative — suggest a diagnostic/logging step to gather more evidence rather than guessing at a fix
 
 2. Explain the cause in plain English, 2-3 sentences max.
 
@@ -42,6 +49,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (input.length > MAX_INPUT_LENGTH) {
+      return NextResponse.json(
+        { error: "Input must be 6,000 characters or fewer. Please shorten the paste and try again." },
+        { status: 400 }
+      );
+    }
+
     const completion = await getClient().chat.completions.create({
       model: "gpt-5.6-sol",
       messages: [
@@ -55,8 +69,16 @@ export async function POST(req: NextRequest) {
     const diagnosis = JSON.parse(raw);
 
     return NextResponse.json({ diagnosis });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Diagnosis error:", err);
+
+    if (err instanceof OpenAI.APIError && err.status === 429) {
+      return NextResponse.json(
+        { error: "The diagnosis service is busy. Please wait a moment and try again." },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Failed to diagnose. Check your OPENAI_API_KEY and try again." },
       { status: 500 }
