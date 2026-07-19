@@ -19,7 +19,7 @@ A developer will paste a webhook payload, error log, or failed request. Your job
    - env_var: Environment variable misconfiguration (missing var, wrong environment - test vs live keys, not loaded at runtime)
    - malformed_payload: Payload structure doesn't match what the code expects (schema mismatch, null field, wrong content-type)
    - unknown: Doesn't clearly match the above - explain your best guess
-   
+
    IMPORTANT: If the evidence is ambiguous, incomplete, or conflicting, do NOT force-fit it into a specific category just to seem confident. Instead:
    - Select "unknown" with "low" confidence
    - In your explanation, clearly state what specific information is missing (e.g. "the request headers weren't included" or "no stack trace was provided")
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     }
 
     const completion = await getClient().chat.completions.create({
-      model: "gpt-5.6-sol",
+      model: "gpt-5.6-terra",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: input },
