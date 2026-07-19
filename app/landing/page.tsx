@@ -33,7 +33,7 @@ export default function Landing() {
       </div>
 
       <img
-        src="/paydiagnose_logo_transparent.png"
+        src="/paydiagnose_logo.png"
         alt="PayDiagnose"
         className="relative w-[220px] sm:w-[320px] md:w-[380px] opacity-0"
         style={{ animation: "fade-up 0.8s ease-out 0.1s forwards" }}
@@ -58,7 +58,7 @@ export default function Landing() {
       </p>
 
       <a
-        href="/"
+        href="/app"
         className="relative mt-9 sm:mt-11 inline-flex items-center gap-2 text-white font-bold text-sm sm:text-base px-7 sm:px-9 py-3 sm:py-3.5 rounded-full hover:scale-[1.03] active:scale-[0.98] transition-transform opacity-0"
         style={{
           animation: "fade-up 0.8s ease-out 1.35s forwards",

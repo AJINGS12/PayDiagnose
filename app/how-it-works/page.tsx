@@ -3,10 +3,10 @@ export default function HowItWorks() {
     <div className="min-h-screen bg-[var(--base)]">
       <header className="border-b border-[var(--line)] bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center">
+          <a href="/app" className="flex items-center">
             <img src="/paydiagnose_logo.png" alt="PayDiagnose" className="h-7 sm:h-9 rounded-md" />
           </a>
-          <a href="/" className="text-xs sm:text-sm text-[var(--ink-soft)] hover:text-[var(--accent)] transition-colors font-medium">
+          <a href="/app" className="text-xs sm:text-sm text-[var(--ink-soft)] hover:text-[var(--accent)] transition-colors font-medium">
             ← Back to app
           </a>
         </div>
@@ -71,7 +71,7 @@ export default function HowItWorks() {
           time. No login, no setup. Nothing you paste is stored.
         </p>
 
-        <a href="/" className="inline-block w-full sm:w-auto text-center bg-[var(--ink)] hover:bg-[var(--accent)] text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+        <a href="/app" className="inline-block w-full sm:w-auto text-center bg-[var(--ink)] hover:bg-[var(--accent)] text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
           Try it now →
         </a>
       </main>
