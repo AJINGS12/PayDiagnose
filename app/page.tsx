@@ -87,7 +87,7 @@ export default function Home() {
       <header className="border-b border-[var(--line)] bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <img src="/paydiagnose_logo.png" alt="PayDiagnose" className="h-7 sm:h-9 rounded-md" />
+            <img src="/paydiagnose_logo_dark.png" alt="PayDiagnose" className="h-12 sm:h-15 rounded-md" />
           </div>
           <a href="/how-it-works" className="text-xs sm:text-sm text-[var(--ink-soft)] hover:text-[var(--accent)] transition-colors font-medium">
             How it works
