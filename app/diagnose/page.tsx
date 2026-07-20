@@ -123,7 +123,11 @@ export default function Home() {
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onInput={(e) => setInput((e.target as HTMLTextAreaElement).value)}
+            onPaste={(e) => {
+              setTimeout(() => {
+                setInput((e.target as HTMLTextAreaElement).value);
+              }, 0);
+            }}
             placeholder="Paste your webhook error, payload, or stack trace here..."
             rows={8}
             className="w-full resize-none bg-transparent font-mono text-[13px] leading-relaxed text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:outline-none"
