@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 type Category = "auth_403" | "signature_mismatch" | "timeout_retry" | "dns_routing" | "env_var" | "malformed_payload" | "unknown";
 
@@ -42,27 +42,26 @@ type Diagnosis = {
 const CONFIDENCE_LEVELS = { high: 3, medium: 2, low: 1 };
 
 export default function Home() {
+  const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [hasText, setHasText] = useState(false);
   const [loading, setLoading] = useState(false);
   const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
-  function syncHasText() {
-    const value = textareaRef.current?.value ?? "";
-    setHasText(value.trim().length > 0);
-  }
-
-  function setTextareaValue(value: string) {
-    if (textareaRef.current) {
-      textareaRef.current.value = value;
-    }
-    setHasText(value.trim().length > 0);
-  }
+  // Safety net: some mobile browsers don't reliably fire onChange/onInput
+  // after a paste. This polls the real DOM value every 250ms and self-heals
+  // the React state if it's drifted out of sync.
+  useEffect(() => {
+    const id = setInterval(() => {
+      const domValue = textareaRef.current?.value ?? "";
+      setInput((current) => (domValue !== current ? domValue : current));
+    }, 250);
+    return () => clearInterval(id);
+  }, []);
 
   async function handleDiagnose(overrideInput?: string) {
-    const payload = overrideInput ?? textareaRef.current?.value ?? "";
+    const payload = overrideInput ?? textareaRef.current?.value ?? input;
     if (!payload.trim()) return;
 
     setLoading(true);
@@ -135,11 +134,11 @@ export default function Home() {
           </div>
           <textarea
             ref={textareaRef}
-            defaultValue=""
-            onChange={syncHasText}
-            onInput={syncHasText}
-            onKeyUp={syncHasText}
-            onPaste={() => setTimeout(syncHasText, 0)}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onInput={(e) => setInput((e.target as HTMLTextAreaElement).value)}
+            onPaste={() => requestAnimationFrame(() => setInput(textareaRef.current?.value ?? ""))}
+            onBlur={() => setInput(textareaRef.current?.value ?? "")}
             placeholder="Paste your webhook error, payload, or stack trace here..."
             rows={8}
             className="w-full resize-none bg-transparent font-mono text-[13px] leading-relaxed text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:outline-none"
@@ -150,7 +149,7 @@ export default function Home() {
               {EXAMPLES.map((ex) => (
                 <button
                   key={ex.label}
-                  onClick={() => setTextareaValue(ex.value)}
+                  onClick={() => setInput(ex.value)}
                   className="text-xs px-2.5 py-1 rounded-full border border-[var(--line)] text-[var(--ink-soft)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                 >
                   {ex.label}
@@ -159,7 +158,7 @@ export default function Home() {
             </div>
             <button
               onClick={() => handleDiagnose()}
-              disabled={loading || !hasText}
+              disabled={loading || !input.trim()}
               className="shrink-0 w-full sm:w-auto bg-[var(--ink)] hover:bg-[var(--accent)] disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-medium px-5 py-2.5 sm:py-2 rounded-lg transition-colors"
             >
               {loading ? "Diagnosing…" : "Diagnose"}
