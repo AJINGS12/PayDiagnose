@@ -20,10 +20,17 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               window.onerror = function(msg, url, line, col, error) {
-                alert('ERROR: ' + msg + ' at line ' + line);
+                alert(
+                  "Message: " + msg +
+                  "\\nFile: " + url +
+                  "\\nLine: " + line +
+                  "\\nColumn: " + col +
+                  "\\nStack: " + (error && error.stack)
+                );
               };
-              window.addEventListener('unhandledrejection', function(e) {
-                alert('PROMISE ERROR: ' + e.reason);
+
+              window.addEventListener("unhandledrejection", function(e) {
+                alert("Promise Error: " + (e.reason?.stack || e.reason));
               });
             `,
           }}
