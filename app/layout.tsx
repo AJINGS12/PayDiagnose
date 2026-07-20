@@ -16,25 +16,6 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen">
         {children}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.onerror = function(msg, url, line, col, error) {
-                alert(
-                  "Message: " + msg +
-                  "\\nFile: " + url +
-                  "\\nLine: " + line +
-                  "\\nColumn: " + col +
-                  "\\nStack: " + (error && error.stack)
-                );
-              };
-
-              window.addEventListener("unhandledrejection", function(e) {
-                alert("Promise Error: " + (e.reason?.stack || e.reason));
-              });
-            `,
-          }}
-        />
       </body>
     </html>
   );
