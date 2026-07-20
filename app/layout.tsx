@@ -14,8 +14,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-     <body className="min-h-screen">
+      <body className="min-h-screen">
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.onerror = function(msg, url, line, col, error) {
+                alert('ERROR: ' + msg + ' at line ' + line);
+              };
+              window.addEventListener('unhandledrejection', function(e) {
+                alert('PROMISE ERROR: ' + e.reason);
+              });
+            `,
+          }}
+        />
       </body>
     </html>
   );
